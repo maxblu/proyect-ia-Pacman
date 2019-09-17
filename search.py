@@ -93,7 +93,7 @@ def depthFirstSearch(problem):
     pila.push((problem.getStartState(),'',0,['']))
 
     while not pila.isEmpty():
-        
+
         actual_state= pila.pop()
 
         if problem.isGoalState(actual_state[0]):
@@ -103,7 +103,7 @@ def depthFirstSearch(problem):
         succesors = problem.getSuccessors(actual_state[0])
 
         #Coger en profundidad los adyacentes de forma inversa (escomentar esto)
-        succesors.reverse()
+        # succesors.reverse()
 
         for suc in succesors:
             temp =[]+ actual_state[3]
@@ -112,15 +112,9 @@ def depthFirstSearch(problem):
                 temp.append(suc[1])
                 pila.push((suc[0],suc[1],suc[2],temp))
 
-        
-    
 
     return actual_state[3][1:]
-    
-    
-    
-    
-    
+
 
 
 def breadthFirstSearch(problem):
@@ -139,7 +133,9 @@ def breadthFirstSearch(problem):
             break
 
         succesors = problem.getSuccessors(actual_state[0])
-
+        # print actual_state
+        # print succesors
+        # util.pause()
         #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
         # succesors.reverse()
 
@@ -158,7 +154,52 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    def prior_func(item):
+        return item[2]
+
+    cola = util.PriorityQueueWithFunction(prior_func)
+    
+    visited=[]
+
+    
+    # visited.append(problem.getStartState())
+    cola.push((problem.getStartState(),'',0,['']))
+
+    while not cola.isEmpty():
+        
+        actual_state= cola.pop()
+
+        
+        
+        if not actual_state in visited:
+            visited.append(actual_state[0]) 
+        # total_cost+=actual_state[2]
+
+        if problem.isGoalState(actual_state[0]):
+            print actual_state
+            break
+
+        succesors = problem.getSuccessors(actual_state[0])
+
+
+        #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
+        # succesors.reverse()
+
+        for suc in succesors:
+
+            temp =[]+ actual_state[3]
+            
+            if suc[0] not in visited:
+                temp.append(suc[1])
+                item = (suc[0],suc[1],suc[2]+actual_state[2],temp)
+
+                cola.push(item)
+
+        
+    
+    return actual_state[3][1:]
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -172,9 +213,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def printStack(struc):
-    while not struc.isEmpty():
-        print struc.pop()
+
 
 # Abbreviations
 bfs = breadthFirstSearch
