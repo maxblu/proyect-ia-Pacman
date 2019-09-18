@@ -105,8 +105,6 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
 
     return searchAlgoritm(problem,heuristic=nullHeuristic,typeName='ucs')
-   
-
 
 def nullHeuristic(state, problem=None):
     """
@@ -115,7 +113,7 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic): 
+def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
 
@@ -129,7 +127,7 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         return item[2]
 
     def ucs_prior(item):
-            return item[2]
+            return item[4]
 
     def astar_prior(item):
             return item[4]
@@ -139,7 +137,6 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         i = 1
     elif typeName == 'bfs':
         cola = util.PriorityQueueWithFunction(bfs_prior)
-        
     elif typeName == 'ucs':
         cola = util.PriorityQueueWithFunction(ucs_prior)
         
@@ -156,9 +153,11 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         actual_state= cola.pop()
 
 
+
         if not actual_state[0] in visited:
             visited.append(actual_state[0])
-                    else:
+         
+        else:
             continue
 
         if problem.isGoalState(actual_state[0]):
@@ -170,6 +169,10 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
         # succesors.reverse()
 
+        # print 'visited',visited
+        # print 'succesors',succesors
+        # util.pause()
+
         for suc in succesors:
 
             temp =[]+ actual_state[3]
@@ -178,18 +181,18 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
             if suc[0] not in visited:
                 temp.append(suc[1])
                 if typeName == 'dfs':
-                    print suc[2] - i
+                    # print suc[2] - i
                     # util.pause()
                     item = (suc[0],suc[1],suc[2]-i,temp,suc[2]+actual_state[2]+h)
                     cola.push(item)
                     i+=1
+                
                 else:
                     item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
 
                     cola.push(item)
 
-        
-    
+
     return actual_state[3][1:]
 
 
