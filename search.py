@@ -88,85 +88,16 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    pila = util.Stack()
-    visited=[]
-    pila.push((problem.getStartState(),'',0,['']))
-
-    while not pila.isEmpty():
-
-        actual_state= pila.pop()
-        # print actual_state[0]
-
-        if not actual_state in visited:
-            visited.append(actual_state[0])
-        else:
-            continue
-
-        if problem.isGoalState(actual_state[0]):
-            # print actual_state
-            break
-
-        succesors = problem.getSuccessors(actual_state[0])
-
-        #Coger en profundidad los adyacentes de forma inversa (escomentar esto)
-        # succesors.reverse()
-
-        for suc in succesors:
-            temp =[]+ actual_state[3]
-
-            if suc[0] not in visited:
-                temp.append(suc[1])
-                pila.push((suc[0],suc[1],suc[2],temp))
-
-
-    return actual_state[3][1:]
+    return searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs')
 
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    cola = util.Queue()
-    visited =[]
-
-    cola.push((problem.getStartState(),'',0,['']))
-
-
-     
-
-    while not cola.isEmpty():
-        
-        actual_state= cola.pop()
-        if not actual_state[0] in visited:
-            visited.append(actual_state[0])
-        else:
-            continue
-            # print 'visited :' ,visited
-            # util.pause()
-        # print actual_state[0]
-        if problem.isGoalState(actual_state[0]):
-            print actual_state
-            break
-
-        succesors = problem.getSuccessors(actual_state[0])
-        # print actual_state
-        # print succesors
-
-        #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
-        # succesors.reverse()
-
-        for suc in succesors:
-            temp =[]+ actual_state[3]
-
-            if suc[0] not in visited:
-                # print 'SUcesor a expandir',suc[0]
-                temp.append(suc[1])
-                cola.push((suc[0],suc[1],suc[2],temp))
-        
-        # util.pause()
     
+    return searchAlgoritm(problem,heuristic=nullHeuristic,typeName='bfs')
 
-    return actual_state[3][1:]
 
 
 def uniformCostSearch(problem):
@@ -174,52 +105,7 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
 
     return searchAlgoritm(problem,heuristic=nullHeuristic,typeName='ucs')
-    # def prior_func(item):
-    #     return item[2]
-
-    # cola = util.PriorityQueueWithFunction(prior_func)
-    
-    # visited=[]
-
-    
-    # # visited.append(problem.getStartState())
-    # cola.push((problem.getStartState(),'',0,['']))
-
-    # while not cola.isEmpty():
-        
-    #     actual_state= cola.pop()
-
-        
-        
-    #     if not actual_state[0] in visited:
-    #         visited.append(actual_state[0]) 
-    #     else:
-    #         continue
-    #     # total_cost+=actual_state[2]
-
-    #     if problem.isGoalState(actual_state[0]):
-    #         print actual_state
-    #         break
-
-    #     succesors = problem.getSuccessors(actual_state[0])
-
-
-    #     #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
-    #     # succesors.reverse()
-
-    #     for suc in succesors:
-
-    #         temp =[]+ actual_state[3]
-            
-    #         if suc[0] not in visited:
-    #             temp.append(suc[1])
-    #             item = (suc[0],suc[1],suc[2]+actual_state[2],temp)
-
-    #             cola.push(item)
-
-        
-    
-    # return actual_state[3][1:]
+   
 
 
 def nullHeuristic(state, problem=None):
@@ -229,68 +115,18 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic=nullHeuristic): 
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
 
     return searchAlgoritm(problem,heuristic,'astar')
-    # def prior_func(item):
-    #     return item[4]
-
-    # cola = util.PriorityQueueWithFunction(prior_func)
-    
-    # visited=[]
-
-    
-    # # visited.append(problem.getStartState())
-    # cola.push((problem.getStartState(),'',0,[''],0))
-
-    # while not cola.isEmpty():
-        
-    #     actual_state= cola.pop()
-
-        
-        
-    #     if not actual_state[0] in visited:
-    #         visited.append(actual_state[0]) 
-    #     else:
-    #         continue
-    #     # total_cost+=actual_state[2]
-
-    #     if problem.isGoalState(actual_state[0]):
-    #         # print actual_state
-            
-    #         break
-
-    #     succesors = problem.getSuccessors(actual_state[0])
-
-
-    #     #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
-    #     succesors.reverse()
-
-    #     for suc in succesors:
-
-    #         temp =[]+ actual_state[3]
-    #         h=heuristic(suc[0],problem)
-    #         # if h <30:
-    #         #     print h
-    #         #     util.pause()
-    #         if suc[0] not in visited:
-    #             temp.append(suc[1])
-    #             item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
-
-    #             cola.push(item)
-
-        
-    
-    # return actual_state[3][1:]
 
 
 def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     def dfs_prior(item):
-        return item[4]
+        return item[2]
     def bfs_prior(item):
-        return item[4]
+        return item[2]
 
     def ucs_prior(item):
             return item[2]
@@ -300,6 +136,7 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
 
     if typeName == 'dfs':
         cola = util.PriorityQueueWithFunction(dfs_prior)
+        i = 1
     elif typeName == 'bfs':
         cola = util.PriorityQueueWithFunction(bfs_prior)
         
@@ -312,44 +149,44 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     visited=[]
 
     
-    # visited.append(problem.getStartState())
     cola.push((problem.getStartState(),'',0,[''],0))
 
     while not cola.isEmpty():
         
         actual_state= cola.pop()
 
-        
-        
+
         if not actual_state[0] in visited:
-            visited.append(actual_state[0]) 
-        else:
+            visited.append(actual_state[0])
+                    else:
             continue
-        # total_cost+=actual_state[2]
 
         if problem.isGoalState(actual_state[0]):
-            # print actual_state
-            
             break
 
         succesors = problem.getSuccessors(actual_state[0])
 
 
         #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
-        succesors.reverse()
+        # succesors.reverse()
 
         for suc in succesors:
 
             temp =[]+ actual_state[3]
             h=heuristic(suc[0],problem)
-            # if h <30:
-            #     print h
-            #     util.pause()
+
             if suc[0] not in visited:
                 temp.append(suc[1])
-                item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
+                if typeName == 'dfs':
+                    print suc[2] - i
+                    # util.pause()
+                    item = (suc[0],suc[1],suc[2]-i,temp,suc[2]+actual_state[2]+h)
+                    cola.push(item)
+                    i+=1
+                else:
+                    item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
 
-                cola.push(item)
+                    cola.push(item)
 
         
     
