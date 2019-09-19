@@ -168,6 +168,7 @@ class PositionSearchProblem(search.SearchProblem):
         return self.startState
 
     def isGoalState(self, state):
+
         isGoal = state == self.goal
 
         # For display purposes only
@@ -278,17 +279,19 @@ class CornersProblem(search.SearchProblem):
         Stores the walls, pacman's starting position and corners.
         """
         self.walls = startingGameState.getWalls()
-    
+        self.costFn =1
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.corners = [(1,1), (1,top), (right, 1), (right, top)]
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
+        self.corners_visited=[]
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+
 
 
     def getStartState(self):
@@ -297,13 +300,16 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        return  (self.startingPosition,[False]*4)
+      
+
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state[1] == [True]*4
 
     def getSuccessors(self, state):
         """
@@ -315,17 +321,33 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                if (nextx,nexty) == self.corners[0]:
+                    
+                    nextState = ((nextx, nexty), orList(state[1],[True,False,False,False]))   
 
-            "*** YOUR CODE HERE ***"
+                elif (nextx,nexty) ==self.corners[1]:
+                    
+                    nextState = ((nextx, nexty),orList(state[1],[False,True,False,False]))
+                
+                elif (nextx,nexty) == self.corners[2]:
+                    
+                    nextState = ((nextx, nexty),orList(state[1],[False,False,True,False]))
+                
+                elif (nextx,nexty) == self.corners[3]:
+                  
+                    nextState = ((nextx, nexty),orList(state[1],[False,False,False,True]))
+                
+
+                else:
+                    nextState = ((nextx, nexty),state[1])
+                cost = self.costFn
+                successors.append( ( nextState, action, 1) )
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,8 +382,23 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    "***Primera Heurstica con 1475 nodos expanded para manhattan y 1532 para euclidean***"
+    quedan=[]
+    distances =[]
+    for i in range(0,4):
+        if not state[1][i]:
+            quedan.append(corners[i])
+
+    for corner in quedan:
+        distances.append( abs(state[0][0] - corner[0]) + abs(state[0][1] - corner[1])) # manhattan
+        # distances.append(( (state[0][0] - corner[0]) ** 2 + (state[0][1] - corner[1]) ** 2 ) ** 0.5) # Euclidean
+
+    if len(distances)>0:
+        return min(distances) # Default to trivial solution
+    else: 
+        return 0
+
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -541,3 +578,6 @@ def mazeDistance(point1, point2, gameState):
     assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
     prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
     return len(search.bfs(prob))
+
+def orList(lista,listb):
+    return [x or y for x, y in zip(lista,listb)]

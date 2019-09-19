@@ -123,6 +123,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     def dfs_prior(item):
         return item[2]
+
     def bfs_prior(item):
         return item[2]
 
@@ -180,16 +181,17 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
 
             if suc[0] not in visited:
                 temp.append(suc[1])
+                
                 if typeName == 'dfs':
                     # print suc[2] - i
                     # util.pause()
-                    item = (suc[0],suc[1],suc[2]-i,temp,suc[2]+actual_state[2]+h)
+                    
+                    item = (suc[0],suc[1],suc[2]-i,temp,- (suc[2]+actual_state[2]+h))
                     cola.push(item)
                     i+=1
                 
                 else:
                     item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
-
                     cola.push(item)
 
 
