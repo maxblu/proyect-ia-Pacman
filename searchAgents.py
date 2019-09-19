@@ -394,10 +394,10 @@ def cornersHeuristic(state, problem):
         # distances.append(( (state[0][0] - corner[0]) ** 2 + (state[0][1] - corner[1]) ** 2 ) ** 0.5) # Euclidean
 
     if len(distances)>0:
-        return min(distances) # Default to trivial solution
+        return max(distances) # Default to trivial solution
     else: 
         return 0
-
+    
 
 
 class AStarCornersAgent(SearchAgent):
@@ -491,8 +491,29 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+    # print problem.walls.count()
     "*** YOUR CODE HERE ***"
-    return 0
+
+
+    ## first heuristic numbers of food uneaten  con 12517 nodos expndidos
+    # return len(foodGrid.asList())
+
+    a = len(foodGrid.asList())
+    "***Manhattan ***"
+    distances =[0]
+    foodGrid =foodGrid.asList()
+    for food in foodGrid :
+        distances.append( abs(position[0] - food[0]) + abs(position[1] - food[1])) # manhattan
+
+    
+    # return max(distances) #manhattan
+    return a+max(distances) #mezcla de Manhattan  con la cantidad de comida
+
+
+def AnyFoodHeuristic(state,problem):
+    # x,y= state
+    # foodsPos = problem.food.asList()
+    return 1
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -522,8 +543,10 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.aStarSearch(problem,AnyFoodHeuristic)
+        # return search.uniformCostSearch(problem)
+        # return search.dfs(problem)
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -557,11 +580,10 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         complete the problem definition.
         """
         x,y = state
-
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
-def mazeDistance(point1, point2, gameState):
+        foods= self.food.asList()
+        return (x,y) in  foods
+        
+def mazeDistance(point1, point2, gameState, walls):
     """
     Returns the maze distance between any two points, using the search functions
     you have already built. The gameState can be any game state -- Pacman's

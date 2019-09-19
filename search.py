@@ -153,9 +153,10 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         
         actual_state= cola.pop()
 
+        # visited.append(actual_state[0])
 
 
-        if not actual_state[0] in visited:
+        if  actual_state[0] not in visited:
             visited.append(actual_state[0])
          
         else:
@@ -170,34 +171,35 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
         #Coger a lo ancho los adyacentes de forma inversa (escomentar esto)
         # succesors.reverse()
 
-        # print 'visited',visited
-        # print 'succesors',succesors
-        # util.pause()
 
         for suc in succesors:
 
             temp =[]+ actual_state[3]
             h=heuristic(suc[0],problem)
-
             if suc[0] not in visited:
                 temp.append(suc[1])
-                
                 if typeName == 'dfs':
-                    # print suc[2] - i
-                    # util.pause()
-                    
+
                     item = (suc[0],suc[1],suc[2]-i,temp,- (suc[2]+actual_state[2]+h))
                     cola.push(item)
                     i+=1
-                
                 else:
+
                     item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
+                    # if not contain(suc[0],cola.heap):
                     cola.push(item)
 
 
     return actual_state[3][1:]
 
-
+# def contain(state,lista):
+#     for (_,_, obj) in lista:
+#         # print state
+#         # util.pause()
+#         if state == obj[0]:
+#             return True
+#     # util.pause()
+#     return False
 
 
 # Abbreviations
