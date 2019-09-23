@@ -382,22 +382,77 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "***Primera Heurstica con 1475 nodos expanded para manhattan y 1532 para euclidean***"
+    """***Heuristica que expande 692 nodos busca la manhattan la menor a las comidas que quedan,
+      luego se queda con la menor desde ese pnunto la las demas comidas que faltan
+      y asi hasta que no queden comidas ***"""
     quedan=[]
-    distances =[]
+    distance ={}
     for i in range(0,4):
         if not state[1][i]:
             quedan.append(corners[i])
 
     for corner in quedan:
-        distances.append( abs(state[0][0] - corner[0]) + abs(state[0][1] - corner[1])) # manhattan
-        # distances.append(( (state[0][0] - corner[0]) ** 2 + (state[0][1] - corner[1]) ** 2 ) ** 0.5) # Euclidean
+        distance[corner] =  abs(state[0][0] - corner[0]) + abs(state[0][1] - corner[1]) # manhattan
 
-    if len(distances)>0:
-        return max(distances) # Default to trivial solution
-    else: 
-        return 0
+
+    if len(distance.values()) == 0:
+            return 0
+    min_val = min(distance.values() )
+    for posFood in distance.keys():
+        if distance[posFood] == min_val:
+            first= posFood
+            quedan.remove(first)
+            break
+
+    result = []
+    result.append(min_val)
+    recursive_dist(first,quedan,result)
+
+    return sum( result )
+
+
+
+    # "***Primera Heurstica con 1475 nodos expanded para manhattan y 1532 para euclidean***"
+    # quedan=[]
+    # distances =[]
+    # for i in range(0,4):
+    #     if not state[1][i]:
+    #         quedan.append(corners[i])
+
+    # for corner in quedan:
+    #     distances.append( abs(state[0][0] - corner[0]) + abs(state[0][1] - corner[1])) # manhattan
+    #     # distances.append(( (state[0][0] - corner[0]) ** 2 + (state[0][1] - corner[1]) ** 2 ) ** 0.5) # Euclidean
+
+    # # min_food = min(distances)
+
+
+    # if len(distances)>0:
+    #     return max(distances)
+    # else: 
+    #     return 0
+
+def recursive_dist(posInit,listPost,result):
+    if len(listPost)== 0:
+        
+        return result
+    menor=(100000000,1)
+    for i in listPost:
+        
+        actual = manhattanPoss(posInit,i)
+
+        if menor[0] > actual:
+            menor = (actual,i)
     
+    result.append(menor[0])
+    listPost.remove(menor[1])
+    recursive_dist(menor[1],listPost,result)
+
+def manhattanPoss(positionInit, final):
+    "The Manhattan distance heuristic for a PositionSearchProblem"
+    xy1 = positionInit
+    xy2 = final
+
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
 
 class AStarCornersAgent(SearchAgent):
@@ -494,20 +549,43 @@ def foodHeuristic(state, problem):
     # print problem.walls.count()
     "*** YOUR CODE HERE ***"
 
+    
 
-    ## first heuristic numbers of food uneaten  con 12517 nodos expndidos
+
+    # # first heuristic numbers of food uneaten  con 12517 nodos expndidos
     # return len(foodGrid.asList())
 
-    a = len(foodGrid.asList())
-    "***Manhattan ***"
-    distances =[0]
+    # "***Manhattan ***"
+    # a = len(foodGrid.asList())
+    # distances =[0]
+    # foodGrid =foodGrid.asList()
+    # for food in foodGrid :
+    #     distances.append( abs(position[0] - food[0]) + abs(position[1] - food[1])) # manhattan
+    # return max(distances) #manhattan
+    # return a+max(distances) #mezcla de Manhattan  con la cantidad de comida(incositente )
+
+
+    "***heuristic menor que 7000***"
+    distance = {}
     foodGrid =foodGrid.asList()
     for food in foodGrid :
-        distances.append( abs(position[0] - food[0]) + abs(position[1] - food[1])) # manhattan
+        distance[food] = ( abs(position[0] - food[0]) + abs(position[1] - food[1])) # manhattan
+
+    if len(distance.values()) == 0:
+        return 0
+    food_manh = max(distance.values() )
 
     
-    # return max(distances) #manhattan
-    return a+max(distances) #mezcla de Manhattan  con la cantidad de comida
+    for food in distance.keys():
+        if distance[food] == food_manh:
+            chousen = food
+            break
+
+
+
+    path_distance = mazeDistance(position,chousen,problem.startingGameState)
+    return path_distance
+    
 
 
 def AnyFoodHeuristic(state,problem):
@@ -543,8 +621,8 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        return search.aStarSearch(problem,AnyFoodHeuristic)
-        # return search.uniformCostSearch(problem)
+        # return search.aStarSearch(problem,AnyFoodHeuristic)
+        return search.uniformCostSearch(problem)
         # return search.dfs(problem)
 
 
@@ -583,7 +661,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         foods= self.food.asList()
         return (x,y) in  foods
         
-def mazeDistance(point1, point2, gameState, walls):
+def mazeDistance(point1, point2, gameState):
     """
     Returns the maze distance between any two points, using the search functions
     you have already built. The gameState can be any game state -- Pacman's

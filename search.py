@@ -122,7 +122,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
 def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     def dfs_prior(item):
-        return item[2]
+        return item[5]
 
     def bfs_prior(item):
         return item[2]
@@ -133,9 +133,10 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     def astar_prior(item):
             return item[4]
 
+    i = 1
     if typeName == 'dfs':
         cola = util.PriorityQueueWithFunction(dfs_prior)
-        i = 1
+        
     elif typeName == 'bfs':
         cola = util.PriorityQueueWithFunction(bfs_prior)
     elif typeName == 'ucs':
@@ -147,7 +148,7 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
     visited=[]
 
     
-    cola.push((problem.getStartState(),'',0,[''],0))
+    cola.push((problem.getStartState(),'',0,[''],0,0))
 
     while not cola.isEmpty():
         
@@ -158,7 +159,7 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
 
         if  actual_state[0] not in visited:
             visited.append(actual_state[0])
-         
+        
         else:
             continue
 
@@ -178,16 +179,18 @@ def searchAlgoritm(problem,heuristic=nullHeuristic,typeName='dfs'):
             h=heuristic(suc[0],problem)
             if suc[0] not in visited:
                 temp.append(suc[1])
-                if typeName == 'dfs':
 
-                    item = (suc[0],suc[1],suc[2]-i,temp,- (suc[2]+actual_state[2]+h))
-                    cola.push(item)
-                    i+=1
-                else:
+                # if typeName == 'dfs':
 
-                    item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h)
-                    # if not contain(suc[0],cola.heap):
-                    cola.push(item)
+                #     item = (suc[0],suc[1],i,temp,suc[2]+actual_state[2]+h)
+                #     cola.push(item)
+                    
+                # else:
+
+                item = (suc[0],suc[1],suc[2]+actual_state[2],temp,suc[2]+actual_state[2]+h,i)
+                # if not contain(suc[0],cola.heap):
+                cola.push(item)
+                i-=1
 
 
     return actual_state[3][1:]

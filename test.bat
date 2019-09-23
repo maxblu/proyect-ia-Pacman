@@ -1,31 +1,38 @@
 
 
-:::: DFS
-::python pacman.py -q -l tinyMaze 			-p SearchAgent
-::python pacman.py -q -l mediumMaze 		-p SearchAgent
-::python pacman.py -q -l bigMaze  		 	-p SearchAgent
+::::DFS
+python pacman.py -l tinyMaze 			-p SearchAgent					-q
+python pacman.py -l mediumMaze 		-p SearchAgent					-q
+python pacman.py -l bigMaze  		 	-p SearchAgent					-q
 
 
-:::: BFS
-::python pacman.py -q -l openMaze 			-p SearchAgent -a fn=bfs
-:: python pacman.py -q -l mediumMaze 		-p SearchAgent -a fn=bfs
-:: python pacman.py -q -l bigMaze    		-p SearchAgent -a fn=bfs
-::python eightpuzzle.py
+::::BFS
+python pacman.py -l openMaze 			-p SearchAgent					-q -a fn=bfs
+python pacman.py -l mediumMaze 		-p SearchAgent					-q -a fn=bfs
+python pacman.py -l bigMaze    		-p SearchAgent					-q -a fn=bfs
+:: python eightpuzzle.py
 
-:::: UCS
-:: python pacman.py -q -l mediumMaze 		-p SearchAgent  		-a fn=ucs
-:: python pacman.py -q -l mediumDottedMaze 	-p StayEastSearchAgent 	
-:: python pacman.py -q -l mediumScaryMaze 	-p StayWestSearchAgent 	
+::::UCS
+python pacman.py -l mediumMaze 		-p SearchAgent					-q -a fn=ucs
+python pacman.py -l mediumDottedMaze 	-p StayEastSearchAgent			-q 	
+python pacman.py -l mediumScaryMaze 	-p StayWestSearchAgent			-q 	
 
 
-:::: A-STAR
-:: python pacman.py -q -l bigMaze 			-p SearchAgent -a fn=ucs 								
-:: python pacman.py -q -l bigMaze 			-p SearchAgent -a fn=astar,heuristic=manhattanHeuristic 
+::::A-STAR
+python pacman.py -l bigMaze 			-p SearchAgent					-q -a fn=ucs 								
+python pacman.py -l bigMaze 			-p SearchAgent					-q -a fn=astar,heuristic=manhattanHeuristic 
 
-python pacman.py -q -l tinyCorners 		-p SearchAgent					--frameTime 0				-a fn=bfs,prob=CornersProblem
-python pacman.py -q -l mediumCorners 		-p SearchAgent					--frameTime 0 				-a fn=bfs,prob=CornersProblem
-python pacman.py -q -l mediumCorners 		-p AStarCornersAgent			--frameTime 0 	-z 0.5
-:: python pacman.py -q -l testSearch 			-p AStarFoodSearchAgent			--frameTime 0
-:: python pacman.py -q -l trickySearch 		-p AStarFoodSearchAgent			--frameTime 0
-:: python pacman.py -q -l bigSearch 			-p ClosestDotSearchAgent		--frameTime 0 	-z .5 
-:: python pacman.py -q -l bigSearch 			-p ApproximateSearchAgent		--frameTime 0 	-z .5 -q 
+python pacman.py -l openMaze 			-p SearchAgent					-q -a fn=ucs 								
+python pacman.py -l openMaze 			-p SearchAgent					-q -a fn=astar,heuristic=manhattanHeuristic 
+
+::::CornerProblem
+python pacman.py -l tinyCorners 		-p SearchAgent					-q -a fn=bfs,prob=CornersProblem 	--frameTime 0
+python pacman.py -l mediumCorners 	-p SearchAgent					-q -a fn=bfs,prob=CornersProblem 	--frameTime 0
+python pacman.py -l mediumCorners 	-p AStarCornersAgent			-q  								--frameTime 0  	-z .5
+
+python pacman.py -l testSearch 		-p AStarFoodSearchAgent			-q  								--frameTime 0
+python pacman.py -l tinySearch 		-p AStarFoodSearchAgent			-q  								--frameTime 0
+python pacman.py -l trickySearch 		-p AStarFoodSearchAgent			-q  								--frameTime 0
+python pacman.py -l bigSearch 		-p ClosestDotSearchAgent		-q  								--frameTime 0 	-z .5  
+::python pacman.py -l bigSearch 		-p ApproximateSearchAgent		-q  								--frameTime 0 	-z .5  
+					

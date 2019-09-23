@@ -1,0 +1,275 @@
+% !TeX spellcheck = en_US
+
+%===================================================================================
+% JORNADA CIENTÍFICA ESTUDIANTIL 2013 - MATCOM, UH
+%===================================================================================
+% Esta plantilla ha sido diseñada para ser usada en los artículos de la
+% Jornada Científica Estudiantil, MatCom 2015.
+%
+% Por favor, siga las instrucciones de esta plantilla y rellene en las secciones
+% correspondientes.
+%
+% NOTA: Necesitará el archivo 'jcematcom.sty' en la misma carpeta donde esté este
+%       archivo para poder utilizar esta plantila.
+%===================================================================================
+
+
+
+%===================================================================================
+% PREÁMBULO
+%-----------------------------------------------------------------------------------
+\documentclass[a4paper,10pt,twocolumn]{article}
+
+%===================================================================================
+% Paquetes
+%-----------------------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{jcematcom}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage[pdftex]{hyperref}
+
+\newtheorem{teo}{Teorema}
+
+%-----------------------------------------------------------------------------------
+% Configuración
+%-----------------------------------------------------------------------------------
+\hypersetup{colorlinks,%
+	    citecolor=black,%
+	    filecolor=black,%
+	    linkcolor=black,%
+	    urlcolor=blue}
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Presentacion
+%-----------------------------------------------------------------------------------
+% Título
+%-----------------------------------------------------------------------------------
+\title{Informe Proyecto Pacman}
+
+%-----------------------------------------------------------------------------------
+% Autores
+%-----------------------------------------------------------------------------------
+\author{\\
+\name Daniel de la Osa Fernandez \email \href{mailto:d.osa@estudiantes.matcom.uh.cu}{d.osa@estudiantes.matcom.uh.cu}
+	\\ \addr Grupo C-511}
+
+%-----------------------------------------------------------------------------------
+% Tutores
+%-----------------------------------------------------------------------------------
+
+%-----------------------------------------------------------------------------------
+% Headings
+%-----------------------------------------------------------------------------------
+\jcematcomheading{219}{1-\pageref{end}}{}
+
+%-----------------------------------------------------------------------------------
+\ShortHeadings{Pacman-Project}{Autores}
+%===================================================================================
+
+
+
+%===================================================================================
+% DOCUMENTO
+%-----------------------------------------------------------------------------------
+\begin{document}
+
+%-----------------------------------------------------------------------------------
+% NO BORRAR ESTA LINEA!
+%-----------------------------------------------------------------------------------
+\twocolumn[
+%-----------------------------------------------------------------------------------
+
+\maketitle
+
+%===================================================================================
+% Resumen y Abstract
+%-----------------------------------------------------------------------------------
+\selectlanguage{spanish} % Para producir el documento en Español
+
+%-----------------------------------------------------------------------------------
+% Resumen en Español
+%-----------------------------------------------------------------------------------
+\begin{abstract}
+
+	Se presentan las heurísticas para resolver las preguntas 5 y 6 del proyecto de pacman. Asi como las ideas principale seguidas para descubrirlas. Luego se procederá a la demostración de su admisibilidad y consistencia.
+	
+\end{abstract}
+
+%-----------------------------------------------------------------------------------
+% English Abstract
+%-----------------------------------------------------------------------------------
+\vspace{0.5cm}
+
+
+%-----------------------------------------------------------------------------------
+% Palabras clave
+%-----------------------------------------------------------------------------------
+
+%-----------------------------------------------------------------------------------
+% Temas
+%-----------------------------------------------------------------------------------
+
+
+
+%-----------------------------------------------------------------------------------
+% NO BORRAR ESTAS LINEAS!
+%-----------------------------------------------------------------------------------
+\vspace{0.8cm}
+]
+%-----------------------------------------------------------------------------------
+
+
+%===================================================================================
+
+%===================================================================================
+% Introducción
+%-----------------------------------------------------------------------------------
+\section{Introducción}\label{sec:intro}
+%-----------------------------------------------------------------------------------
+Como parte de los problemas de búsquedas no solo nos hace faltan buenos algoritmos sino también potentes funciones heurísticas que nos permitan con mayor eficacia dotar a estos algoritmos como A* de una especie de olfato especializado que apunte hacia la direción óptima de nuestro problema.
+
+     
+
+%===================================================================================
+
+\begin{teo}[Admisibilidad]
+		Para todo nodo del grafo la heurística calculada para ese nodo tiene que ser mayor que cero y menor o igual que el costo real que falta para llegar al nodo final desde n
+		
+		$0 \le h(n) \le h'(n)$ $\forall n$ 			
+\end{teo}
+
+\begin{teo}[Consistencia]
+Para cada arco desde noda A hasta C la diferecia entre $h(A)$ y $h(C)$ es menor o igual que el costo del arco de A a C.
+
+$h(A) - h(C) \le c(A,C) $
+
+
+	
+\end{teo}
+
+%===================================================================================
+% Desarrollo
+%-----------------------------------------------------------------------------------
+\section{Heurísticas para el CornersProblem }\label{sec:dev}
+%-----------------------------------------------------------------------------------
+Este problema lo que intenta resolver es que se genere un camino de costo mínimo que se come todas las comidas que están en las esquinas del tablero.
+Tener en cuenta que el tablero esta formado por casillas con paredes que forman un laberinto y que el pacman solo puede moverse de casilla en casilla adjacente. 
+
+Las dos heurísticas para este problema surgieron a partir de la relajación del problema original en la cual se retiran todos los muros que forman el laberinto.
+   
+
+
+%-----------------------------------------------------------------------------------
+	\subsection{Maximos de Manhattan}\label{sub:results}
+%-------------------------------------------------------------------------------
+ La idea que se encuentra detrás de esta heurística no es más que primero la forma que se puede mover pacman, por lo cuál se elige la distancia de manhattan. Luego como tenemos 4 comidas disponibles que hay que comerse pues al menos tengo que caminar hasta donde está la más lejana. 
+ 
+ Esta claro que estos pasos van a ser muchos menos de lo que me hace falta para completar la tarea ya que tengo qur primero llegar a esas otras que estan más cercanas, y como están en direciones contrarias implicaría más costo. 
+ Fíjese que puedo cambiar de máximo al caminar más hacia un esquina pero esto no va cambiar el echo que voy ha tener que seguir teniedo que llegar a ese punto para comerme esa comida. Cuando salimos del problema relajado no hay problemas ya que el costo del camino solo aumentaría más por la existencia de las paredes. Y aquí tenemos entoces nuestra heurística admisible.
+ 
+ Como pudimos ver en cada paso como sólo nos movemos en una dirección un paso eso amentaria la distancia de manhattan a las comidas que faltan en a lo sumo 1 o uno menos sin llegar a ser negativa por tanto como el costo de moverse de una casilla a otra es 1 , se cumple que la desigualdad del teorema de consistencia ya que 1, 0 y -1 son menores o iguales que 1.
+ 
+ Como se a visto en clase sabemos que una heurística consistente es también admisisble.    
+  
+%-----------------------------------------------------------------------------------
+	\subsection{Mínimos De Manhatan entre Puntos}\label{sub:lists}
+%-----------------------------------------------------------------------------------
+Esta es una heurística aún mejor que surge después, ya que considerando mejor el problema. Lo que se quiere es el camino de costo mínimo que pase por todas las comidas y esto en el problema relajado no es más que la distancia manhattan de  una esquina a otra sumadas. 
+
+Pues a partir de esto se toman la menor de estas distancias del punto actual a las comidas que faltan , luego de la comida que estaba a menor distancia se calcula  la próxima comida que está a menor distancia de esta y asi hasta que no queden comidas. Luego que tenemos todas estas distancias minimas las sumamos ya que en principio no representan más que la logitud del camino de manhattan que pasa por todas las esquinas.
+
+Fíjese que cuando hablamos de distancia es de la de manhattan y que aunque es nesarios más calculos ya que faltando las 4 comidas serían, $4 + 3 + 3 + 1$ por cada nodo expandido,  es factible por la naturaleza de este problema.   
+
+Cuando llevamos esto al problema real esta claro que se cumple la admisibilidad ya que al exixtir las paredes solo se genera un camino en el costo real ya que la heurística da como resultado exactamente el camino óptimo si no exitieran los obstáculos.
+
+En cuanto a la consistencia se observa lo mismo ocuurido con la anterior cumpliéndose la desigualdad del teoremma. 
+	
+	
+
+\section{Heurísticas para el FoodSearchProblem }\label{sec:dev}
+%-------------------------------------------------------------------------------
+El problema consiste en buscar el camino de costo mínimo que pasa por todoas las comidas iniciales puestas en el tablero, obviamente atacar este problema con un el algorítmo de búsqueda de costo uniforme seria infactible. Por lo que ayudado de A* y un buena heurística pudieramos lograr resolver este problema.
+
+
+
+
+%-----------------------------------------------------------------------------------
+\subsection{BFS al Máximo de Manhattan}\label{sub:results}
+%-------------------------------------------------------------------------------
+Se trató de aplicar la misma heurística efectiva para el corners problem pero al aumentar la cantidad de comidas así como la aletoriedad de su posición produjo una mejora pero muy pequeña (16000 -12000 nodos expandidos).
+
+Por tanto se aplicó otra que tenía en cuenta tanto el problema relajado así como el original. Pues esta consiste en calcular todas las distancias Manhattan desde el punto actual a las comidas, luego quedarse con la mayor que sería la que en pricipio más me demoraría en alcanzar y luego devuelvo la longitud del menor camino desde donde estoy hasta ese punto usando BFS ya que las arista tienen costo uno.
+
+Este debería ser el mínimo valor a recorrer ya que si todas las demás comidas estuvieran en ese camino se cumple que es igual al óptimo. 
+Pudiera pasar primero que no todas las comidas estuvieran en ese camino, desviarme a comermelas me generaria costa adicional lo que hace que el valor de la heurística ya sea menor que el óptimo (admisibilidad).
+ 
+Otro caso es que el que tenga mayor distancia de Manhattan no sea el que de el camino, usando bfs, más largo. No importa ya que al quedarse por debajo sigue siendo optimista por tanto cumple el teorema de admisibilidad.  
+
+Con respecto a la consistencia ocurre lo mismo que en la heurística anterior, al dar un solo paso puede pasar que le nuevo camino de calculdo por BFS sólo aumente o disminuya en una unidad y como el costo de moverse por una arista es 1 se cumple la desigualdad del teorema de consistencia.  
+
+
+ 
+
+
+%------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------
+
+
+%===================================================================================
+% Conclusiones
+%-----------------------------------------------------------------------------------
+\section{Conclusiones}\label{sec:conc}
+
+  En esta sección puede incluir las conclusiones de su investigación y las ideas
+  sobre la continuidad del trabajo, en el caso que aplique.
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Recomendaciones
+%-----------------------------------------------------------------------------------
+\section{Recomendaciones}\label{sec:rec}
+
+  En esta sección puede incluir recomendaciones sobre posibles formas de continuar
+  la investigación u otros temas relacionados.
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Bibliografía
+%-----------------------------------------------------------------------------------
+\begin{thebibliography}{99}
+%-----------------------------------------------------------------------------------
+	\bibitem{knuth} Donald E. Knuth. \emph{The Art of Computer Programming}.
+		Volume 1: Fundamental Algorithms (3rd~edition), 1997.
+		Addison-Wesley Professional.
+
+	\bibitem{goedel} Kurt Göedel. \emph{Über formal unentscheidbare Sätze der
+		Principia Mathematica und verwandter Systeme, I}.
+		Monatshefte für Mathematik und Physik 38.
+
+	\bibitem{wiki} Wikipedia. URL: \href{http://en.wikipedia.org}
+	  {http://en.wikipedia.org}.
+		Consultado en \today.
+
+%-----------------------------------------------------------------------------------
+\end{thebibliography}
+
+%-----------------------------------------------------------------------------------
+
+\label{end}
+
+\end{document}
+
+%===================================================================================
